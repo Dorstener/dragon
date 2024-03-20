@@ -77,6 +77,11 @@ const locations = [
         "button text": ["Attack", "Dodge", "Run"],
         "button functions":[attack, dodge, goTown],
         text: "You are fighting a monster.",
+    },{
+        name: "kill monster",
+        "button text": ["Go to town square", "Go to town square", "Go to town square"],
+        "button functions": [goTown, goTown, goTown],
+        text: "The monster screams Arg! as it dies. You gain experience points and find gold."
     }
 ];
 
@@ -120,13 +125,11 @@ function buyWeapon() {
             gold -= 30;
             currentWeapon++;
             goldText.innerText = gold;
-            let newWeapon = weapons;
+            let newWeapon = weapons[currentWeapon].name;
             text.innerText = "You now have a " + newWeapon + ".";
-            text.innerText += " In your inventory you have: " + inventory + ".";
-            newWeapon = weapons[currentWeapon];
-            newWeapon = weapons[currentWeapon].name;
             inventory.push(newWeapon);
-
+            text.innerText += " In your inventory you have: " + inventory + ".";
+            
         } else {
             text.innerText = "You do not have enough gold to buy a weapon.";
         }
@@ -179,10 +182,32 @@ function goFight () {
 
 function attack () {
     text.innerText = "The " + monsters[fighting].name + " attacks.";
+    text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
+    health -= monsters[fighting].level;
+    monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() *xp) + 1;
+    healthText.innerText = health;
+    monsterHealthText.innerText = monsterHealth; 
+    if (health <= 0) {
+        lose();
+    } else if (monsterHealth <= 0) {
+        defeatMonster ();
+    }
 }
 
 function dodge () {
+text.innerText = "You dodge the attack from the " + monsters[fighting].name;
+}
 
+function lose () {
+
+}
+
+function defeatMonster () {
+gold += Math.floor(monsters[fighting].level * 6.7);
+xp += monsters[fighting].level;
+goldText.innerText = gold ;
+xpText.innerText = xp;
+update(locations[4]);
 }
 
 
